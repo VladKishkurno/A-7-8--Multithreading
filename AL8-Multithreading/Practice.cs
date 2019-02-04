@@ -16,14 +16,54 @@ namespace Advanced_Lesson_6_Multithreading
         /// </summary>
         public static void LA8_P1_5()
         {
-            
+            var thread = new Thread(() =>
+            {
+                while (true)
+                {
+                    Console.WriteLine(DateTime.Now.ToLocalTime());
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                }
+            }
+            );
+
+            thread.Start();
+            while(true)
+            {
+                switch(Console.ReadKey().KeyChar)
+                {
+                    case '1': thread.Resume(); break;
+                    case '2': thread.Suspend(); break;
+                }
+            }
         }
 
         /// <summary>
         /// LA8.P2/X. Написать консольное приложение, которое “делает массовую рассылку”. 
         /// </summary>
         public static void LA8_P2_5()
-        {           
+        {
+
+            for (int i = 0; i < 50; i++)
+            {
+                var thread = new Thread(() =>
+                {
+                    Random random = new Random();
+                    int rand = random.Next();
+
+                        while (File.Exists($@"d:\{rand}.txt"))
+                        {
+                            rand += random.Next();
+                        }
+
+                        System.IO.File.AppendAllText($@"d:\{rand}.txt", $"{i}");
+
+                    Thread.Sleep(random.Next(0, 1000));
+                });
+
+                thread.Start();
+            }
+
         }
 
         /// <summary>
