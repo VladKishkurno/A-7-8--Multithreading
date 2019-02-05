@@ -43,25 +43,22 @@ namespace Advanced_Lesson_6_Multithreading
         /// </summary>
         public static void LA8_P2_5()
         {
+            Random random = new Random();
 
             for (int i = 0; i < 50; i++)
             {
-                var thread = new Thread(() =>
+                //var thread = new Thread(() =>
+                ThreadPool.QueueUserWorkItem((object state) =>
                 {
-                    Random random = new Random();
                     int rand = random.Next();
 
-                        while (File.Exists($@"d:\{rand}.txt"))
-                        {
-                            rand += random.Next();
-                        }
-
-                        System.IO.File.AppendAllText($@"d:\{rand}.txt", $"{i}");
-
+                    System.IO.File.AppendAllText(@"d:\" + rand + ".txt", i.ToString());
                     Thread.Sleep(random.Next(0, 1000));
                 });
 
-                thread.Start();
+                //thread.Start();
+                //Thread.Sleep(random.Next(0, 1000));
+                // во всех испытаниях thread оказался быстрее на ноуте, на рабочем компьютере ThreadPool чуточку быстрее работает не зависимо от расположения Sleep
             }
 
         }
@@ -79,7 +76,28 @@ namespace Advanced_Lesson_6_Multithreading
         /// Сохранять все “тела” “писем” в один файл. Использовать блокировку потоков, чтобы избежать проблем синхронизации.  
         /// </summary>
         public static void LA8_P4_5()
-        {            
+        {
+            Random random = new Random();
+
+            var mutex = new Mutex();
+            var obj = new Object();
+
+            for (int i = 0; i < 50; i++)
+            {
+                var thread = new Thread(() =>
+                {
+                    //mutex.WaitOne();
+                    lock (obj)
+                    {
+                        System.IO.File.AppendAllText(@"d:\AllEmails.txt", "Thread : " + i.ToString() + "_" + random.Next().ToString());
+                    }
+                    //mutex.ReleaseMutex();
+                    //Thread.Sleep(random.Next(0, 1000));
+                });
+
+                thread.Start();
+                //Thread.Sleep(random.Next(0, 1000));
+            }
         }
 
         /// <summary>
