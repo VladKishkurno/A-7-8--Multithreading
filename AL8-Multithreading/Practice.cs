@@ -55,12 +55,15 @@ namespace Advanced_Lesson_6_Multithreading
                     System.IO.File.AppendAllText(@"d:\" + rand + ".txt", i.ToString());
                     Thread.Sleep(random.Next(0, 1000));
                 });
-
+                
                 //thread.Start();
                 //Thread.Sleep(random.Next(0, 1000));
                 // во всех испытаниях thread оказался быстрее на ноуте, на рабочем компьютере ThreadPool чуточку быстрее работает не зависимо от расположения Sleep
             }
-
+            while(true)
+            {
+                Console.ReadKey();
+            }
         }
 
         /// <summary>
@@ -106,7 +109,21 @@ namespace Advanced_Lesson_6_Multithreading
         /// удачно ли завершилась отсылка). 
         /// </summary>
         public async static void LA8_P5_5()
-        {           
+        {
+            Random random = new Random();
+
+            for (int i = 0; i < 50; i++)
+            {
+                var x = await SmptServer.SendEmail(@"Thread : " + i.ToString() + "_" + random.Next().ToString());
+                if (x == true)
+                {
+                    Console.WriteLine("Отправлено");
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка отправки, повторите попытку позже");
+                }
+            }
         }
     }    
 }
